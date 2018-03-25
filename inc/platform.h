@@ -5,7 +5,7 @@
 
 #include "devman.h"
 #include "type.h"
-#include "picoc_int.h"
+#include "mybasic_int.h"
 
 // Error / status codes
 enum

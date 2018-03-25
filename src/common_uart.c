@@ -4,7 +4,7 @@
 #include "platform.h"
 #include "platform_conf.h"
 #include "buf.h"
-#include "picoc_int.h"
+#include "mybasic_int.h"
 #include "sermux.h"
 
 // ****************************************************************************

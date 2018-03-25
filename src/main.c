@@ -7,7 +7,7 @@
 #include "platform.h"
 #include "romfs.h"
 #include "shell.h"
-#include "picoc.h"
+#include "my_basic.h"
 #include "term.h"
 #include "platform_conf.h"
 
@@ -66,8 +66,8 @@ int main( void )
     if( ( fp = fopen( boot_order[ i ], "r" ) ) != NULL )
     {
       fclose( fp );
-      char* picoc_argv[] = { "picoc", boot_order[i], NULL };
-      picoc_main( 2, picoc_argv );
+      char* mybasic_argv[] = { "mybasic", boot_order[i], NULL };
+      mybasic_main( 2, mybasic_argv );
       break; // autoruns only the first found
     }
   }
@@ -76,8 +76,8 @@ int main( void )
   if( shell_init() == 0 )
   {
     // Start picoc directly
-    char* picoc_argv[] = { "picoc", NULL };
-    picoc_main( 1, picoc_argv );
+    char* mybasic_argv[] = { "mybasic", NULL };
+    mybasic_main( 1, mybasic_argv );
   }
   else
     shell_start();

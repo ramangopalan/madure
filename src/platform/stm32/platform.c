@@ -9,7 +9,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdio.h>
-#include "picoc_adc.h"
+#include "mybasic_adc.h"
 #include "platform_conf.h"
 #include "diskio.h"
 #include "common.h"

@@ -1,10 +1,10 @@
-// picoc version information
+// MY-BASIC version information
 
 #ifndef __VERSION_H__
 #define __VERSION_H__
 
-#include "picoc.h"
+#include "my_basic.h"
 
-#define     PICOC_NUM_VERSION      2.1
+#define     MYBASIC_NUM_VERSION      "1.2.0"
 
 #endif

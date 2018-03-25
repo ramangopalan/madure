@@ -10,10 +10,10 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include "math.h"
-#include "picoc_adc.h"
+#include "mybasic_adc.h"
 #include "term.h"
 #include "xmodem.h"
-#include "picoc_int.h"
+#include "mybasic_int.h"
 #include "sermux.h"
 
 // [TODO] the new builder should automatically do this

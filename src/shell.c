@@ -1,7 +1,7 @@
-// picoc shell
+// mybasic shell
 
 #include "shell.h"
-#include "picoc.h"
+#include "my_basic.h"
 #include "xmodem.h"
 #include "version.h"
 #include <stdio.h>
@@ -46,15 +46,15 @@ static void shell_help( char* args )
 {
   args = args;
   printf( "Shell commands:\n" );
-  printf( "  exit         - exit from this shell\n" );
-  printf( "  help         - print this help\n" );
-  printf( "  ls or dir    - lists filesystems files and sizes\n" );
-  printf( "  cat or type  - lists file contents\n" );
-  printf( "  picoc [args] - run picoc with the given arguments\n" );
-  printf( "  iv [args]    - Edit files with iv - a vi-like text editor\n" );
-  printf( "  recv [path]  - receive a file via XMODEM and save in path\n" );
+  printf( "  exit           - exit from this shell\n" );
+  printf( "  help           - print this help\n" );
+  printf( "  ls or dir      - lists filesystems files and sizes\n" );
+  printf( "  cat or type    - lists file contents\n" );
+  printf( "  mybasic [args] - run MY-BASIC with the given arguments\n" );
+  printf( "  iv [args]      - Edit files with iv - a vi-like text editor\n" );
+  printf( "  recv [path]    - receive a file via XMODEM and save in path\n" );
   printf( "  cp <src> <dst> - copy source file 'src' to 'dst'\n" );
-  printf( "  ver          - print version details\n" );
+  printf( "  ver            - print version details\n" );
 }
 
 #if defined (BUILD_EDITOR_IV)
@@ -78,7 +78,7 @@ static void shell_iv( char* args )
     {
       if( nargs == SHELL_MAX_IV_ARGS )
       {
-        printf( "Too many arguments to 'iv' (maxim %d)\n", SHELL_MAX_PICOC_ARGS );
+        printf( "Too many arguments to 'iv' (maxim %d)\n", SHELL_MAX_MYBASIC_ARGS );
         return;
       }
       *p = 0;
@@ -108,14 +108,14 @@ static void shell_iv( char* args )
 
 #endif /* #if defined (BUILD_EDITOR_IV) */
 
-// 'picoc' handler
-static void shell_picoc( char* args )
+// 'mybasic' handler
+static void shell_mybasic( char* args )
 {
   int nargs = 0;
-  char* picoc_argv[ SHELL_MAX_PICOC_ARGS + 2 ];
+  char* mybasic_argv[ SHELL_MAX_MYBASIC_ARGS + 2 ];
   char *p, *prev, *temp;
 
-  picoc_argv[ 0 ] = "picoc";
+  mybasic_argv[ 0 ] = "mybasic";
   // Process "args" if needed
   if( *args )
   {
@@ -123,13 +123,13 @@ static void shell_picoc( char* args )
     p = strchr( args, ' ' );
     while( p )
     {
-      if( nargs == SHELL_MAX_PICOC_ARGS )
+      if( nargs == SHELL_MAX_MYBASIC_ARGS )
       {
-        printf( "Too many arguments to 'picoc' (maxim %d)\n", SHELL_MAX_PICOC_ARGS );
+        printf( "Too many arguments to 'mybasic' (maxim %d)\n", SHELL_MAX_MYBASIC_ARGS );
         return;
       }
       *p = 0;
-      picoc_argv[ nargs + 1 ] = temp = prev;
+      mybasic_argv[ nargs + 1 ] = temp = prev;
       nargs ++;
       prev = p + 1;
       p = strchr( p + 1, ' ' );
@@ -137,7 +137,7 @@ static void shell_picoc( char* args )
       if( *temp == '\'' || *temp == '"' )
       {
         temp ++;
-        picoc_argv[ nargs ] = temp;
+        mybasic_argv[ nargs ] = temp;
         while( *temp )
         {
           if( *temp == SHELL_ALT_SPACE )
@@ -148,9 +148,9 @@ static void shell_picoc( char* args )
       }
     }
   }
-  picoc_argv[ nargs + 1 ] = NULL;
-  printf( "Press " SHELL_EOF_STRING " to exit picoc\n" );
-  picoc_main( nargs + 1, picoc_argv );
+  mybasic_argv[ nargs + 1 ] = NULL;
+  printf( "Press " SHELL_EOF_STRING " to exit mybasic\n" );
+  mybasic_main( nargs + 1, mybasic_argv );
   clearerr( stdin );
 }
 
@@ -215,10 +215,10 @@ static void shell_recv( char* args )
     fclose( foutput );
   }
   
-  // automatically exec the file with picoc
+  // automatically exec the file with mybasic
   printf( "Executing the file ...\n\n" );
-  char *argv[] = { "picoc", args, NULL };
-  picoc_main( 2, argv );
+  char *argv[] = { "mybasic", args, NULL };
+  mybasic_main( 2, argv );
 
   free( shell_prog );
   shell_prog = NULL;
@@ -229,7 +229,7 @@ static void shell_recv( char* args )
 static void shell_ver( char* args )
 {
   args = args;
-  printf( "picoc version: %s\n", PICOC_VERSION );
+  printf( "mybasic version: %s\n", MYBASIC_NUM_VERSION );
   printf( "remix version: %s\n", REMIX_VERSION );
 }
 
@@ -365,7 +365,7 @@ static void shell_cp( char *args )
 static const SHELL_COMMAND shell_commands[] =
 {
   { "help", shell_help },
-  { "picoc", shell_picoc },
+  { "mybasic", shell_mybasic },
   { "iv", shell_iv },
   { "recv", shell_recv },
   { "ver", shell_ver },
@@ -379,7 +379,7 @@ static const SHELL_COMMAND shell_commands[] =
 };
 
 #ifdef BUILD_BANNER
-/* PicoC-remix banner */
+/* Mybasic-remix banner */
 static void shell_banner( void )
 {
   printf( "\n\n ____  _            ____                         _      \n" );
@@ -428,7 +428,7 @@ void shell_start()
 
     // Transform ' ' characters inside a '' or "" quoted string in
     // a 'special' char. We do this to let the user execute something
-    // like "picoc -s 'quoted string'" without disturbing the quoted
+    // like "mybasic -s 'quoted string'" without disturbing the quoted
     // string in any way.
     for( i = 0, inside_quotes = 0, quote_char = '\0'; i < strlen( cmd ); i ++ )
       if( ( cmd[ i ] == '\'' ) || ( cmd[ i ] == '"' ) )

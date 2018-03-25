@@ -3,7 +3,7 @@
 #ifndef __COMMON_H__
 #define __COMMON_H__
 
-#include "picoc_int.h"
+#include "mybasic_int.h"
 
 // Virtual timers data
 #define VTMR_FIRST_ID           ( 32 )

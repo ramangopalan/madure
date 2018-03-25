@@ -272,7 +272,7 @@ if not GetOption( 'help' ):
   if not GetOption( 'clean' ):
     print
     print "*********************************"
-    print "Compiling remix ..."
+    print "Compiling MY-BASIC using Madure ..."
     print "CPU:            ", comp['cpu']
     print "Board:          ", comp['board']
     print "Platform:       ", platform
@@ -284,58 +284,53 @@ if not GetOption( 'help' ):
     print "*********************************"
     print
 
-  output = 'picoc_remix_' + comp['target'] + '_' + comp['cpu'].lower()
+  output = 'madure_remix_' + comp['target'] + '_' + comp['cpu'].lower()
 
-  comp.Append(CPPDEFINES = { 'PICOC_CPU' : comp['cpu'],
-                             'PICOC_BOARD' : comp['board'],
-                             'PICOC_PLATFORM' : platform.upper() } )
+  comp.Append(CPPDEFINES = { 'MADURE_CPU' : comp['cpu'],
+                             'MADURE_BOARD' : comp['board'],
+                             'MADURE_PLATFORM' : platform.upper() } )
   comp.Append(CPPDEFINES = {'__BUFSIZ__' : 128})
 
   # Also make the above into direct defines (to use in conditional C code)
-  conf.env.Append(CPPDEFINES = ["PICOC_CPU_" + cnorm( comp['cpu'] ), "PICOC_BOARD_" + cnorm( comp['board'] ), "PICOC_PLATFORM_" +  cnorm( platform )])
+  conf.env.Append(CPPDEFINES = ["MADURE_CPU_" + cnorm( comp['cpu'] ), "MADURE_BOARD_" + cnorm( comp['board'] ), "MADURE_PLATFORM_" +  cnorm( platform )])
 
   if comp['allocator'] == 'multiple':
      conf.env.Append(CPPDEFINES = ['USE_MULTIPLE_ALLOCATOR'])
   elif comp['allocator'] == 'simple':
      conf.env.Append(CPPDEFINES = ['USE_SIMPLE_ALLOCATOR'])
 
-  # picoc source files and include path
-  picoc_files = """picoc.c table.c lex.c parse.c expression.c heap.c type.c variable.c platform.c clibrary.c include.c
-    cstdlib/stdio.c cstdlib/math.c cstdlib/string.c cstdlib/stdlib.c cstdlib/errno.c cstdlib/ctype.c
-    cstdlib/stdbool.c platform/platform_unix.c platform/library_unix.c rotable.c"""
-
-  picoc_full_files = " " + " ".join( [ "src/picoc/%s" % name for name in picoc_files.split() ] )
+  # mybasic source files and include path
+  mybasic_files = """my_basic.c main.c"""
+  mybasic_full_files = " " + " ".join( [ "src/mybasic/%s" % name for name in mybasic_files.split() ] )
 
   # The iv text editor
   iv_files = """ iv.c """
   iv_full_files = " " + " ".join( [ "src/iv/%s" % name for name in iv_files.split() ] )
   
-  comp.Append(CPPPATH = ['inc', 'inc/newlib', 'src/platform', 'src/picoc', 'src/iv'])
-  if comp['target'] == 'nofp':
-    conf.env.Append(CPPDEFINES = ['NO_FP'])
+  comp.Append(CPPPATH = ['inc', 'inc/newlib', 'src/platform', 'src/mybasic', 'src/iv'])
 
   conf.env.Append(CPPPATH = ['src/modules', 'src/platform/%s' % platform])
-  conf.env.Append(CPPDEFINES = {"PICOC_OPTIMIZE_MEMORY" : ( comp['optram'] != 0 and 2 or 0 ) } )
+  conf.env.Append(CPPDEFINES = {"MADURE_OPTIMIZE_MEMORY" : ( comp['optram'] != 0 and 2 or 0 ) } )
   if comp['optram'] == 0:
     conf.env.Append(CPPDEFINES = ['BUILTIN_MINI_STDLIB'])
-    conf.env.Append(CPPDEFINES = ['PICOC_LIBRARY'])
+    conf.env.Append(CPPDEFINES = ['MADURE_LIBRARY'])
 
   # Additional libraries
   local_libs = ''
 
   # Application files
   app_files = """ src/main.c src/romfs.c src/semifs.c src/xmodem.c src/shell.c src/term.c src/common.c src/common_tmr.c src/buf.c
-                  src/salloc.c src/picoc_int.c src/linenoise.c src/common_uart.c src/picoc_adc.c src/dlmalloc.c """
+                  src/salloc.c src/mybasic_int.c src/linenoise.c src/common_uart.c src/mybasic_adc.c src/dlmalloc.c """
 
   # Newlib related files
   newlib_files = " src/newlib/devman.c src/newlib/stubs.c src/newlib/genstd.c src/newlib/stdtcp.c"
 
   # FatFs files
-  app_files = app_files + "src/picoc_mmc.c src/mmcfs.c src/fatfs/ff.c src/fatfs/ccsbcs.c "
+  app_files = app_files + "src/mybasic_mmc.c src/mmcfs.c src/fatfs/ff.c src/fatfs/ccsbcs.c "
   comp.Append(CPPPATH = ['src/fatfs'])
 
   # Module files
-  module_names = "pd.c pwm.c can.c tmr.c term.c adc.c pio.c i2c.c picoc.c spi.c uart.c cpu.c"
+  module_names = "pd.c pwm.c can.c tmr.c term.c adc.c pio.c i2c.c mybasic.c spi.c uart.c cpu.c"
   module_files = " " + " ".join( [ "src/modules/%s" % name for name in module_names.split() ] )
 
   # Optimizer flags (speed or size)
@@ -350,7 +345,7 @@ if not GetOption( 'help' ):
   execfile( "src/platform/%s/conf.py" % platform )
 
   # Complete file list
-  source_files = Split( app_files + specific_files + newlib_files + picoc_full_files + module_files + iv_full_files )
+  source_files = Split( app_files + specific_files + newlib_files + mybasic_full_files + module_files + iv_full_files )
   
   comp = conf.Finish()
 

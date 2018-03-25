@@ -5,7 +5,7 @@
 #include "platform_conf.h"
 #include "type.h"
 #include "common.h"
-#include "picoc_int.h"
+#include "mybasic_int.h"
 #include <stdio.h>
 
 // [TODO] when the new build system is ready, automatically add the
