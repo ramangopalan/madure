@@ -318,6 +318,10 @@ if not GetOption( 'help' ):
   # Additional libraries
   local_libs = ''
 
+  # my-basic has a function 'MEM' which indicates core memory
+  # status. To enable this, we include the following.
+  conf.env.Append(CPPDEFINES = ['MB_ENABLE_ALLOC_STAT'])
+
   # Application files
   app_files = """ src/main.c src/romfs.c src/semifs.c src/xmodem.c src/shell.c src/term.c src/common.c src/common_tmr.c src/buf.c
                   src/salloc.c src/mybasic_int.c src/linenoise.c src/common_uart.c src/mybasic_adc.c src/dlmalloc.c """

@@ -5,6 +5,8 @@
 **
 ** Copyright (C) 2011 - 2018 Wang Renxin
 **
+** Modified for Madure by Raman Gopalan <ramangopalan@gmail.com>
+**
 ** Permission is hereby granted, free of charge, to any person obtaining a copy of
 ** this software and associated documentation files (the "Software"), to deal in
 ** the Software without restriction, including without limitation the rights to
@@ -30,6 +32,7 @@
 #endif /* _MSC_VER */
 
 #include "my_basic.h"
+#include "platform_conf.h"
 #if defined ARDUINO && !defined MB_CP_ARDUINO
 #	define MB_CP_ARDUINO
 #endif /* ARDUINO && !MB_CP_ARDUINO */
@@ -1327,8 +1330,8 @@ static const size_t _mb_allocated = (size_t)(~0);
 static mb_memory_allocate_func_t _mb_allocate_func = 0;
 static mb_memory_free_func_t _mb_free_func = 0;
 
-static void* mb_malloc(size_t s);
-static void mb_free(void* p);
+void* mb_malloc(size_t s);
+void mb_free(void* p);
 
 static int mb_memcmp(void* l, void* r, size_t s);
 static size_t mb_memtest(void* p, size_t s);
@@ -2243,6 +2246,20 @@ MBCONST static const _func_t _core_libs[] = {
 	{ "END", _core_end }
 };
 
+// Madure platform libraries.
+#define MB_LIB_PROTO(fname)\
+  int fname(mb_interpreter_t* s, void **l);
+
+// platform module.
+MB_LIB_PROTO(pd_cpu);
+MB_LIB_PROTO(pd_platform);
+MB_LIB_PROTO(pd_board);
+
+// eLua module.
+MB_LIB_PROTO(elua_version);
+MB_LIB_PROTO(elua_save_history);
+MB_LIB_PROTO(elua_shell);
+
 #define _STD_ID_VAL "VAL"
 #define _STD_ID_LEN "LEN"
 #define _STD_ID_GET "GET"
@@ -2280,7 +2297,16 @@ MBCONST static const _func_t _std_libs[] = {
 	{ _STD_ID_SET, _std_set },
 
 	{ "PRINT", _std_print },
-	{ "INPUT", _std_input }
+	{ "INPUT", _std_input },
+// For Madure
+#if defined MYBASIC_PLATFORM_LIBS_ROM
+# undef _ROM
+# define _ROM(module) MYBASIC_MOD_##module
+	MYBASIC_PLATFORM_LIBS_ROM
+#if defined MYBASIC_TARGET_SPECIFIC_LIBS
+	MYBASIC_TARGET_SPECIFIC_LIBS
+#endif
+#endif	
 };
 
 #ifdef MB_ENABLE_COLLECTION_LIB
@@ -3200,7 +3226,7 @@ static void _resize_dynamic_buffer(_dynamic_buffer_t* buf, size_t es, size_t c) 
 }
 
 /* Allocate a chunk of memory with a specific size */
-static void* mb_malloc(size_t s) {
+void* mb_malloc(size_t s) {
 	char* ret = 0;
 	size_t rs = s;
 
@@ -3224,7 +3250,7 @@ static void* mb_malloc(size_t s) {
 }
 
 /* Free a chunk of memory */
-static void mb_free(void* p) {
+void mb_free(void* p) {
 	mb_assert(p);
 
 #ifdef MB_ENABLE_ALLOC_STAT

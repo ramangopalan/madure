@@ -30,6 +30,7 @@
 #endif /* _MSC_VER */
 
 #include "my_basic.h"
+#include "platform_conf.h"
 #ifdef MB_CP_VC
 #	include <conio.h>
 #	include <crtdbg.h>
@@ -701,11 +702,17 @@ static int _get_unicode_bom(const char** ch) {
 }
 
 static void _clear_screen(void) {
-#ifdef MB_OS_WIN
-	system("cls");
-#else /* MB_OS_WIN */
-	system("clear");
-#endif /* MB_OS_WIN */
+/* #ifdef MB_OS_WIN */
+/* 	system("cls"); */
+/* #else /\* MB_OS_WIN *\/ */
+/* 	system("clear"); */
+/* #endif /\* MB_OS_WIN *\/ */
+#ifdef BUILD_TERM
+# include "term.h"
+  term_clrscr();
+#else
+  printf("terminal support not enabled.\n");
+#endif	
 }
 
 static int _new_program(void) {

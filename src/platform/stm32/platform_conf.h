@@ -7,6 +7,7 @@
 #include "stacks.h"
 #include "stm32f10x.h"
 #include "mybasic_int.h"
+#include "mybasic_mod.h"
 #include "sermux.h"
 
 
@@ -32,6 +33,9 @@
 #define CON_TIMER_ID          0
 #define TERM_LINES            25
 #define TERM_COLS             80
+
+#define MYBASIC_PLATFORM_LIBS_ROM\
+  _ROM(PD)
 
 // *****************************************************************************
 // Configuration data
