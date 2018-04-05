@@ -10,6 +10,7 @@
 #include "mybasic_mod.h"
 #include "sermux.h"
 
+#define NUM_PHYS_TIMER        5
 
 // *****************************************************************************
 // Define here what components you want for this platform
@@ -35,7 +36,12 @@
 #define TERM_COLS             80
 
 #define MYBASIC_PLATFORM_LIBS_ROM\
-  _ROM(PD)
+ _ROM(PD)\
+ _ROM(BUZZER)\
+ _ROM(TFT)\
+ _ROM(TMR)\
+ _ROM(TERMINAL)\
+ _ROM(PWM)\
 
 // *****************************************************************************
 // Configuration data
@@ -78,7 +84,7 @@
 #define MMCFS_TICK_HZ         10
 #define MMCFS_TICK_MS         ( 1000 / MMCFS_TICK_HZ )
 #define MMCFS_CS_PORT         0
-#if defined (PICOC_CPU_STM32F103VCT6)
+#if defined (MADURE_CPU_STM32F103VCT6)
 # define MMCFS_CS_PIN         4
 #else
 # define MMCFS_CS_PIN         8
